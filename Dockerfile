@@ -1,10 +1,14 @@
-# 使用官方的Nginx镜像作为基础镜像
-FROM registry.cn-hangzhou.aliyuncs.com/test/nginx:latest
+# 使用官方的 OpenJDK 作为基础镜像
+FROM openjdk:17-jdk-slim
+
 # 设置工作目录
-WORKDIR /usr/share/nginx/html
-# 将当前目录下的所有文件复制到工作目录
-COPY . /usr/share/nginx/html
-# 暴露端口，假设你的应用监听的是80端口
-EXPOSE 80
-# 启动Nginx服务
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /app
+
+# 将当前目录中的JAR包复制到镜像中的/app目录
+COPY app.jar /app/app.jar
+
+# 暴露应用程序运行时的端口（假设应用程序在8080端口运行）
+EXPOSE 8080
+
+# 使用 entrypoint 启动应用程序
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
